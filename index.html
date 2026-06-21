@@ -385,85 +385,165 @@ function drawPtero() {
 }
 
 function drawPteroShape() {
-  const wFlap = Math.sin(wingPhase) * 0.5;
+  const wFlap = Math.sin(wingPhase) * 0.45;
+  ctx.lineJoin = "round";
+  ctx.lineCap  = "round";
 
-  /* Sayap atas kiri */
+  /* ── Sayap besar atas (emas/tan, mengepak) ── */
   ctx.save();
   ctx.rotate(-wFlap);
-  ctx.fillStyle   = "#C0392B";
-  ctx.strokeStyle = "#7B1FA2";
-  ctx.lineWidth   = 1.8;
+  const wingTop = ctx.createLinearGradient(-30, -30, 0, 4);
+  wingTop.addColorStop(0,   "#C8A96E");
+  wingTop.addColorStop(0.5, "#D4B483");
+  wingTop.addColorStop(1,   "#8B6914");
+  ctx.fillStyle   = wingTop;
+  ctx.strokeStyle = "#6B4F10";
+  ctx.lineWidth   = 1.5;
   ctx.beginPath();
-  ctx.moveTo(-4, -4);
-  ctx.quadraticCurveTo(-32, -18, -26, -34);
-  ctx.quadraticCurveTo(-12, -38,  -4, -20);
+  ctx.moveTo(-2, -2);
+  ctx.quadraticCurveTo(-36, -14, -38, -30);
+  ctx.quadraticCurveTo(-24, -42,  -6, -22);
+  ctx.quadraticCurveTo( -2, -14,  -2,  -2);
   ctx.closePath();
   ctx.fill(); ctx.stroke();
-  /* membran */
-  ctx.fillStyle = "rgba(180,50,30,0.4)";
+  /* urat sayap */
+  ctx.strokeStyle = "rgba(100,70,10,0.35)";
+  ctx.lineWidth   = 1;
   ctx.beginPath();
-  ctx.moveTo(-4, -4); ctx.quadraticCurveTo(-20,-12,-20,-26); ctx.quadraticCurveTo(-10,-30,-4,-16); ctx.closePath();
-  ctx.fill();
+  ctx.moveTo(-2,-2); ctx.quadraticCurveTo(-24,-10,-34,-26); ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(-2,-2); ctx.quadraticCurveTo(-16,-16,-24,-34); ctx.stroke();
   ctx.restore();
 
-  /* Sayap bawah kanan */
+  /* ── Sayap bawah (tan, lebih pendek) ── */
   ctx.save();
-  ctx.rotate(wFlap * 0.6);
-  ctx.fillStyle   = "#C0392B";
-  ctx.strokeStyle = "#7B1FA2";
-  ctx.lineWidth   = 1.8;
+  ctx.rotate(wFlap * 0.7);
+  const wingBot = ctx.createLinearGradient(-20, 6, 0, 30);
+  wingBot.addColorStop(0,   "#C8A96E");
+  wingBot.addColorStop(1,   "#8B6914");
+  ctx.fillStyle   = wingBot;
+  ctx.strokeStyle = "#6B4F10";
+  ctx.lineWidth   = 1.5;
   ctx.beginPath();
   ctx.moveTo(-2, 6);
-  ctx.quadraticCurveTo(-28, 20, -22, 34);
-  ctx.quadraticCurveTo(-10, 38,  -2, 20);
+  ctx.quadraticCurveTo(-30, 16, -26, 32);
+  ctx.quadraticCurveTo(-14, 40,  -2, 18);
   ctx.closePath();
   ctx.fill(); ctx.stroke();
   ctx.restore();
 
-  /* Badan */
-  const bg = ctx.createRadialGradient(-2, 0, 2, 0, 0, 18);
-  bg.addColorStop(0,   "#9B59B6");
-  bg.addColorStop(0.6, "#6C3483");
-  bg.addColorStop(1,   "#4A235A");
-  ctx.fillStyle   = bg;
-  ctx.strokeStyle = "#7B1FA2";
-  ctx.lineWidth   = 2;
+  /* ── Ekor ── */
+  ctx.fillStyle   = "#5B2D8E";
+  ctx.strokeStyle = "#3A1A60";
+  ctx.lineWidth   = 1.2;
   ctx.beginPath();
-  ctx.ellipse(0, 2, 18, 13, 0, 0, Math.PI * 2);
+  ctx.moveTo(-14, 6);
+  ctx.quadraticCurveTo(-28, 8, -26, 18);
+  ctx.quadraticCurveTo(-20, 22, -12, 12);
+  ctx.closePath();
   ctx.fill(); ctx.stroke();
 
-  /* Perut */
-  ctx.fillStyle = "#F0B429";
+  /* ── Badan ungu (lebih panjang, aerodinamis) ── */
+  const bodyG = ctx.createLinearGradient(-10, -8, 14, 10);
+  bodyG.addColorStop(0,   "#7B52B8");
+  bodyG.addColorStop(0.4, "#5B2D8E");
+  bodyG.addColorStop(1,   "#3A1A60");
+  ctx.fillStyle   = bodyG;
+  ctx.strokeStyle = "#3A1A60";
+  ctx.lineWidth   = 1.8;
   ctx.beginPath();
-  ctx.ellipse(3, 6, 9, 7, 0.1, 0, Math.PI * 2);
+  ctx.ellipse(0, 3, 20, 11, -0.2, 0, Math.PI * 2);
+  ctx.fill(); ctx.stroke();
+
+  /* ── Perut tan/emas ── */
+  const bellyG = ctx.createLinearGradient(0, 2, 10, 12);
+  bellyG.addColorStop(0, "#E8C87A");
+  bellyG.addColorStop(1, "#C8A040");
+  ctx.fillStyle = bellyG;
+  ctx.beginPath();
+  ctx.ellipse(4, 6, 10, 7, -0.15, 0, Math.PI * 2);
   ctx.fill();
 
-  /* Kepala */
-  const hg = ctx.createRadialGradient(14, -18, 1, 15, -17, 10);
-  hg.addColorStop(0, "#AB7FD6"); hg.addColorStop(1, "#4A235A");
-  ctx.fillStyle = hg; ctx.strokeStyle = "#7B1FA2"; ctx.lineWidth = 2;
-  ctx.beginPath(); ctx.ellipse(15, -18, 10, 8, -0.1, 0, Math.PI * 2);
-  ctx.fill(); ctx.stroke();
-
-  /* Jambul merah */
-  ctx.fillStyle = "#E74C3C"; ctx.strokeStyle = "#922B21"; ctx.lineWidth = 1.5;
+  /* ── Leher ── */
+  ctx.fillStyle   = "#6A42A8";
+  ctx.strokeStyle = "#3A1A60";
+  ctx.lineWidth   = 1.5;
   ctx.beginPath();
-  ctx.moveTo(8, -22); ctx.quadraticCurveTo(-4, -32, -14, -26);
-  ctx.quadraticCurveTo(-6, -18, 6, -16); ctx.closePath();
+  ctx.moveTo(12, -6);
+  ctx.quadraticCurveTo(16, -13, 18, -16);
+  ctx.quadraticCurveTo(20, -12, 16, -7);
+  ctx.closePath();
   ctx.fill(); ctx.stroke();
 
-  /* Paruh */
-  ctx.fillStyle = "#E74C3C"; ctx.strokeStyle = "#922B21"; ctx.lineWidth = 1.5;
-  ctx.beginPath(); ctx.moveTo(22,-20); ctx.lineTo(44,-17); ctx.lineTo(22,-14); ctx.closePath();
-  ctx.fill(); ctx.stroke();
-  ctx.fillStyle = "#F1948A";
-  ctx.beginPath(); ctx.moveTo(22,-14); ctx.lineTo(40,-14); ctx.lineTo(22,-11); ctx.closePath();
+  /* ── Kepala ungu ── */
+  const headG = ctx.createRadialGradient(16,-20,1, 17,-18,11);
+  headG.addColorStop(0,   "#8B6CC4");
+  headG.addColorStop(0.7, "#5B2D8E");
+  headG.addColorStop(1,   "#3A1A60");
+  ctx.fillStyle   = headG;
+  ctx.strokeStyle = "#3A1A60";
+  ctx.lineWidth   = 1.8;
+  ctx.beginPath();
+  ctx.ellipse(17, -19, 11, 9, -0.2, 0, Math.PI * 2);
   ctx.fill(); ctx.stroke();
 
-  /* Mata */
-  ctx.fillStyle = "#FFF9C4"; ctx.beginPath(); ctx.arc(20,-20,5,0,Math.PI*2); ctx.fill();
-  ctx.strokeStyle="#333"; ctx.lineWidth=1; ctx.stroke();
-  ctx.fillStyle="#1a0a00"; ctx.beginPath(); ctx.arc(21,-20,3,0,Math.PI*2); ctx.fill();
+  /* ── Jambul lancip ke belakang (ungu tua) ── */
+  ctx.fillStyle   = "#4A1A78";
+  ctx.strokeStyle = "#2A0A50";
+  ctx.lineWidth   = 1.2;
+  ctx.beginPath();
+  ctx.moveTo(10, -24);
+  ctx.quadraticCurveTo(-2, -36, -16, -30);
+  ctx.quadraticCurveTo(-6, -20, 8, -18);
+  ctx.closePath();
+  ctx.fill(); ctx.stroke();
+
+  /* ── Paruh oranye-kuning panjang ke kanan ── */
+  const beakG = ctx.createLinearGradient(20, -20, 46, -16);
+  beakG.addColorStop(0, "#F5A623");
+  beakG.addColorStop(1, "#D4810A");
+  ctx.fillStyle   = beakG;
+  ctx.strokeStyle = "#9A5A05";
+  ctx.lineWidth   = 1.5;
+  /* Rahang atas */
+  ctx.beginPath();
+  ctx.moveTo(24, -22);
+  ctx.lineTo(46, -17);
+  ctx.quadraticCurveTo(48, -17, 46, -16);
+  ctx.lineTo(24, -16);
+  ctx.closePath();
+  ctx.fill(); ctx.stroke();
+  /* Rahang bawah (lebih terang) */
+  ctx.fillStyle = "#F0C060";
+  ctx.beginPath();
+  ctx.moveTo(24, -16);
+  ctx.lineTo(42, -16);
+  ctx.lineTo(24, -12);
+  ctx.closePath();
+  ctx.fill(); ctx.stroke();
+
+  /* ── Mata kuning cerah ── */
+  ctx.fillStyle = "#fff";
+  ctx.beginPath(); ctx.arc(21, -22, 5.5, 0, Math.PI * 2); ctx.fill();
+  ctx.strokeStyle = "#3A1A60"; ctx.lineWidth = 1;
+  ctx.stroke();
+  const eyeG = ctx.createRadialGradient(21,-22,0.5, 21,-22,4);
+  eyeG.addColorStop(0,   "#FFE033");
+  eyeG.addColorStop(0.6, "#F0A800");
+  eyeG.addColorStop(1,   "#C07000");
+  ctx.fillStyle = eyeG;
+  ctx.beginPath(); ctx.arc(21.5, -22, 4, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = "#1a0a00";
+  ctx.beginPath(); ctx.arc(22, -22, 2.2, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = "#fff";
+  ctx.beginPath(); ctx.arc(23, -23, 1, 0, Math.PI * 2); ctx.fill();
+
+  /* ── Cakar kecil ── */
+  ctx.strokeStyle = "#3A1A60"; ctx.lineWidth = 1.8; ctx.lineCap = "round";
+  ctx.beginPath(); ctx.moveTo(6,12); ctx.lineTo(4,20); ctx.lineTo(0,24); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(4,20); ctx.lineTo(8,25); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(12,12); ctx.lineTo(11,20); ctx.lineTo(7,24); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(11,20); ctx.lineTo(15,25); ctx.stroke();
   ctx.fillStyle="#fff"; ctx.beginPath(); ctx.arc(22.2,-21.2,1.2,0,Math.PI*2); ctx.fill();
 }
 
