@@ -16,11 +16,118 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-start;
       font-family: 'Fredoka One', 'Segoe UI', cursive, sans-serif;
       user-select: none;
       -webkit-user-select: none;
-      overflow: hidden;
+      overflow-x: hidden;
+      overflow-y: auto;
+      padding-top: 28px;
+      padding-bottom: 0;
+    }
+
+    /* ─── FOOTER ─────────────────────────────────────────── */
+    #page-footer {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 540px;
+      margin-top: 28px;
+      padding: 0 16px 36px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 28px;
+    }
+
+    .footer-section {
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,107,53,0.25);
+      border-radius: 16px;
+      padding: 18px 20px;
+      backdrop-filter: blur(6px);
+    }
+
+    .footer-section h2 {
+      font-size: 1rem;
+      color: #FF6B35;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      text-shadow: 0 0 10px rgba(255,107,53,0.5);
+    }
+
+    .how-to-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .how-to-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      color: rgba(255,220,180,0.9);
+      background: rgba(255,255,255,0.04);
+      border-radius: 8px;
+      padding: 8px 10px;
+    }
+
+    .how-to-item .key {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 32px;
+      height: 28px;
+      background: rgba(255,107,53,0.2);
+      border: 1px solid rgba(255,107,53,0.5);
+      border-radius: 6px;
+      font-size: 0.75rem;
+      color: #FF6B35;
+      font-family: monospace;
+      flex-shrink: 0;
+      padding: 0 4px;
+    }
+
+    .footer-badge {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 14px 20px;
+    }
+
+    .footer-badge a img {
+      display: block;
+      border-radius: 8px;
+      transition: opacity 0.2s;
+    }
+    .footer-badge a:hover img { opacity: 0.85; }
+
+    .legal-text {
+      font-size: 0.75rem;
+      color: rgba(255,200,150,0.65);
+      line-height: 1.7;
+      text-align: center;
+    }
+
+    .legal-text a {
+      color: rgba(255,150,80,0.8);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255,150,80,0.3);
+    }
+    .legal-text a:hover { color: #FF6B35; }
+
+    .legal-divider {
+      display: inline-block;
+      margin: 0 6px;
+      opacity: 0.4;
+    }
+
+    @media (max-width: 500px) {
+      .how-to-grid { grid-template-columns: 1fr; }
+      h1 { font-size: 2rem; }
     }
 
     /* Bintang-bintang latar */
@@ -99,11 +206,59 @@
 <div id="score-display">Skor Tertinggi: <span id="best-score">0</span></div>
 <div id="hint">Spasi / Klik / Sentuh = Terbang!</div>
 
-<div style="margin-top:18px;z-index:1;position:relative;">
-  <a href="https://orynth.dev/projects/pterodaktil-fun" target="_blank" rel="noopener">
-    <img src="https://orynth.dev/api/badge/pterodaktil-fun?theme=light&style=default" alt="Featured on Orynth" width="260" height="80" />
-  </a>
-</div>
+<footer id="page-footer">
+
+  <!-- HOW TO PLAY -->
+  <div class="footer-section">
+    <h2>🦕 Cara Bermain</h2>
+    <div class="how-to-grid">
+      <div class="how-to-item">
+        <span class="key">Space</span> Terbang / Mulai
+      </div>
+      <div class="how-to-item">
+        <span class="key">↑</span> Terbang ke atas
+      </div>
+      <div class="how-to-item">
+        <span class="key">Klik</span> Terbang (mouse)
+      </div>
+      <div class="how-to-item">
+        <span class="key">👆</span> Sentuh layar
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:0.78rem;color:rgba(255,200,150,0.6);line-height:1.6;">
+      Hindari batu lava yang menghalangi jalan.<br>
+      Setiap celah yang dilewati = +1 skor.<br>
+      Game berakhir jika menabrak batu atau tanah.
+    </div>
+  </div>
+
+  <!-- ORYNTH BADGE -->
+  <div class="footer-badge">
+    <a href="https://orynth.dev/projects/pterodaktil-fun" target="_blank" rel="noopener">
+      <img src="https://orynth.dev/api/badge/pterodaktil-fun?theme=light&style=default" alt="Featured on Orynth" width="260" height="80" />
+    </a>
+  </div>
+
+  <!-- LEGAL & PRIVACY -->
+  <div class="footer-section">
+    <h2>⚖️ Legal &amp; Privasi</h2>
+    <div class="legal-text">
+      <strong style="color:rgba(255,200,150,0.85);">pterodaktil.fun</strong> adalah game browser gratis
+      berbasis HTML5 Canvas — tidak ada akun, tidak ada login, tidak ada data pribadi yang dikumpulkan.<br><br>
+      Game ini tidak menggunakan cookie, tidak melacak aktivitas pengguna, dan tidak mengirimkan data
+      ke server manapun. Semua data (skor tertinggi) disimpan lokal di browser kamu via
+      <code style="font-size:0.7rem;background:rgba(255,255,255,0.1);padding:1px 5px;border-radius:4px;">localStorage</code>.<br><br>
+      Karakter pterodaktil dan aset visual merupakan karya orisinal untuk proyek ini.<br><br>
+      <span class="legal-divider">—</span>
+      &copy; 2025 pterodaktil.fun
+      <span class="legal-divider">·</span>
+      Dibuat dengan ❤️ di Indonesia
+      <span class="legal-divider">·</span>
+      <a href="mailto:hello@pterodaktil.fun">Kontak</a>
+    </div>
+  </div>
+
+</footer>
 
 <script>
 /* ─── GAMBAR PTERODAKTIL ─────────────────────────────── */
