@@ -155,13 +155,95 @@ function initGame() {
   gameState = "IDLE";
 }
 
+/* ─── AUDIO (Web Audio API) ──────────────────────────── */
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let   audioCtx = null;
+
+function getACtx() {
+  if (!audioCtx) audioCtx = new AudioCtx();
+  if (audioCtx.state === "suspended") audioCtx.resume();
+  return audioCtx;
+}
+
+/* Kepakan sayap — whoosh naik singkat */
+function sndFlap() {
+  const ac  = getACtx();
+  const osc = ac.createOscillator();
+  const env = ac.createGain();
+  osc.connect(env); env.connect(ac.destination);
+  osc.type = "sawtooth";
+  osc.frequency.setValueAtTime(280, ac.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(560, ac.currentTime + 0.08);
+  env.gain.setValueAtTime(0.22, ac.currentTime);
+  env.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.12);
+  osc.start(ac.currentTime);
+  osc.stop(ac.currentTime + 0.13);
+}
+
+/* Skor — ding menyenangkan */
+function sndScore() {
+  const ac  = getACtx();
+  const t   = ac.currentTime;
+  [880, 1108, 1320].forEach((freq, i) => {
+    const osc = ac.createOscillator();
+    const env = ac.createGain();
+    osc.connect(env); env.connect(ac.destination);
+    osc.type = "sine";
+    osc.frequency.value = freq;
+    env.gain.setValueAtTime(0, t + i * 0.06);
+    env.gain.linearRampToValueAtTime(0.18, t + i * 0.06 + 0.01);
+    env.gain.exponentialRampToValueAtTime(0.001, t + i * 0.06 + 0.18);
+    osc.start(t + i * 0.06);
+    osc.stop(t  + i * 0.06 + 0.2);
+  });
+}
+
+/* Game Over — ledakan turun dramatis */
+function sndGameOver() {
+  const ac = getACtx();
+  const t  = ac.currentTime;
+
+  /* Noise burst */
+  const bufLen  = ac.sampleRate * 0.6;
+  const buf     = ac.createBuffer(1, bufLen, ac.sampleRate);
+  const data    = buf.getChannelData(0);
+  for (let i = 0; i < bufLen; i++) data[i] = Math.random() * 2 - 1;
+  const noise   = ac.createBufferSource();
+  noise.buffer  = buf;
+  const noiseF  = ac.createBiquadFilter();
+  noiseF.type   = "lowpass";
+  noiseF.frequency.setValueAtTime(600, t);
+  noiseF.frequency.exponentialRampToValueAtTime(80, t + 0.5);
+  const noiseG  = ac.createGain();
+  noiseG.gain.setValueAtTime(0.35, t);
+  noiseG.gain.exponentialRampToValueAtTime(0.001, t + 0.55);
+  noise.connect(noiseF); noiseF.connect(noiseG); noiseG.connect(ac.destination);
+  noise.start(t); noise.stop(t + 0.6);
+
+  /* Nada turun */
+  [320, 200, 120].forEach((freq, i) => {
+    const osc = ac.createOscillator();
+    const env = ac.createGain();
+    osc.connect(env); env.connect(ac.destination);
+    osc.type = "square";
+    osc.frequency.setValueAtTime(freq, t + i * 0.07);
+    osc.frequency.exponentialRampToValueAtTime(freq * 0.4, t + i * 0.07 + 0.2);
+    env.gain.setValueAtTime(0.2, t + i * 0.07);
+    env.gain.exponentialRampToValueAtTime(0.001, t + i * 0.07 + 0.25);
+    osc.start(t + i * 0.07);
+    osc.stop(t  + i * 0.07 + 0.28);
+  });
+}
+
 /* ─── INPUT ──────────────────────────────────────────── */
 function handleInput() {
   if (gameState === "IDLE") {
     gameState = "PLAYING";
     ptero.vy  = JUMP_VY;
+    sndFlap();
   } else if (gameState === "PLAYING") {
     ptero.vy  = JUMP_VY;
+    sndFlap();
   } else if (gameState === "DEAD") {
     initGame();
   }
@@ -707,6 +789,7 @@ function update() {
     if (!pipes[i].passed && pipes[i].x + PIPE_W < PTERO_X) {
       pipes[i].passed = true;
       score++;
+      sndScore();
       if (score > bestScore) {
         bestScore = score;
         document.getElementById("best-score").textContent = bestScore;
@@ -715,12 +798,12 @@ function update() {
 
     if (pipes[i].x + PIPE_W < -20) { pipes.splice(i, 1); continue; }
 
-    if (collides(ptero, pipes[i])) { gameState = "DEAD"; return; }
+    if (collides(ptero, pipes[i])) { gameState = "DEAD"; sndGameOver(); return; }
   }
 
   /* Tanah & langit */
-  if (ptero.y + PTERO_H >= playH) { ptero.y = playH - PTERO_H; gameState = "DEAD"; }
-  if (ptero.y <= 0)                { ptero.y = 0;               gameState = "DEAD"; }
+  if (ptero.y + PTERO_H >= playH) { ptero.y = playH - PTERO_H; gameState = "DEAD"; sndGameOver(); }
+  if (ptero.y <= 0)                { ptero.y = 0;               gameState = "DEAD"; sndGameOver(); }
 }
 
 function draw() {
